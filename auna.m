@@ -308,11 +308,11 @@ function start_av(hObject)
     end
     handles = replot_zones(handles);
     ch_outnames = cell(max_channels,1);
-    if exist(fullfile(handles.par.folder_base,'NSx'),'file')
+    if exist(fullfile(handles.par.folder_base,'NSx.mat'),'file')
         lts = [];
         sr = [];
         if isnumeric(handles.par.audio_channel)
-            load(fullfile(handles.par.folder_base,'NSx'),'NSx','freq_priority');
+            load(fullfile(handles.par.folder_base,'NSx.mat'),'NSx','freq_priority');
             selected = arrayfun(@(x) (x.chan_ID==handles.par.audio_channel)*(find(freq_priority(end:-1:1)==x.sr)),NSx);
             if sum(selected)==0
                 error('channel not found in NSx.mat')
@@ -332,7 +332,7 @@ function start_av(hObject)
 
         for ch_n = 1: max_channels
             if exist('freq_priority','var') == false
-                load(fullfile(handles.par.folder_base,'NSx'),'NSx','freq_priority');
+                load(fullfile(handles.par.folder_base,'NSx.mat'),'NSx','freq_priority');
             end                
             ch = handles.par.channels(ch_n);
             selected = arrayfun(@(x) (x.chan_ID==ch)*(find(freq_priority(end:-1:1)==x.sr)),NSx);
