@@ -791,7 +791,7 @@ if ~isempty(handles.selected_events)
         deev = find(handles.selected_events.(concets2rm(ic)));
         nevent = find(cellfun(@(x) strcmp(x,concets2rm(ic)),allconcepts));
         for i = 1:length(deev)
-            tevent = handles.concets.(concets2rm{ic})(deev(i))/1e3;
+            tevent = handles.concepts.(concets2rm{ic})(deev(i))/1e3;
             plot(handles.multimedia_plot,[1  1]*tevent,[-1 1],'-.','linewidth',2,'color','w');
             text(tevent,1,[num2str(nevent) ' '],'Parent',handles.multimedia_plot,'Color','w','FontSize',12,'HorizontalAlignment','right','VerticalAlignment','top');
             if handles.par.show_fr || handles.par.show_raster
@@ -799,7 +799,7 @@ if ~isempty(handles.selected_events)
              text(tevent,handles.plot_counter,[num2str(nevent) ' '],'Parent',handles.fr_axes,'Color','w','FontSize',12,'HorizontalAlignment','right','VerticalAlignment','top');
             end
         end
-    	handles.concets.(concets2rm{ic})(handles.selected_events.(concets2rm(ic))) = [];
+    	handles.concepts.(concets2rm{ic})(handles.selected_events.(concets2rm(ic))) = [];
     end
     
     handles.selected_events = struct();
@@ -932,8 +932,41 @@ function set_annotations_pb_Callback(hObject, eventdata, handles)
     app = configuration_manager(hObject);
     waitfor(app)
     handles = guidata(hObject);
+
+    %the following code is repeteat above and could be better to run it
+    %    only if it required:
+    concepts_names = fieldnames(handles.concepts);
+    listboxItems = cell(length(concepts_names),1);
+    for k = 1 : length(concepts_names) 
+        listboxItems{k} = ['(' num2str(k) ') ' concepts_names{k} ];
+    end
+    if isempty(listboxItems)
+        set(handles.concepts_pm, 'String', ' ');
+        set(handles.concepts_pm,'Enable','off');
+    else
+        set(handles.concepts_pm,'Enable','on');
+        set(handles.concepts_pm, 'String', listboxItems);
+    end
+    zone_names = fieldnames(handles.zones);
+    listboxItems_zones_pm = cell(length(zone_names),1);
+    for k = 1 : length(zone_names) 
+        listboxItems_zones_pm{k} = zone_names{k};
+    end
+    if isempty(listboxItems_zones_pm)
+        set(handles.zones_pm, 'String', ' ');
+        set(handles.zones_pm,'Enable','off');
+    else
+        set(handles.zones_pm,'Enable','on');
+        set(handles.zones_pm, 'String', listboxItems_zones_pm);
+    end
+    handles.zone_gelements = struct;
+    for zi = 1:length(zone_names)
+        handles.zone_gelements.(zone_names{zi}) = {};
+    end
     handles = replot_zones(handles);
     guidata(hObject, handles);
+    %end of repeated code
+    
     
     
 % --- Executes on button press in add_start_pb.
