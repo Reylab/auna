@@ -753,14 +753,14 @@ handles.rectan = plot(handles.multimedia_plot,[rect(1) ,rect(3)+rect(1) ,rect(3)
 etind = rect(1)*1e3;
 etend = (rect(1) + rect(3))*1e3;
 
-if ~isempty(handles.concept)
+if ~isempty(handles.concepts)
     handles.selected_events = struct();
     concepts_names = fieldnames(handles.concepts);
     for cni=1:numel(concepts_names)
-        events = handles.concepts.(concepts_names(cni));
+        events = handles.concepts.(concepts_names{cni});
         events = (events>= etind) & (events<= etend);
         if any(events)
-            handles.selected_events.(concepts_names(cni))=events;
+            handles.selected_events.(concepts_names{cni})=events;
         end
     end    
 end
@@ -788,7 +788,7 @@ if ~isempty(handles.selected_events)
     %easyer) then remove them
     allconcepts = fieldnames(handles.concepts);
     for ic=1:length(concets2rm)
-        deev = find(handles.selected_events.(concets2rm(ic)));
+        deev = find(handles.selected_events.(concets2rm{ic}));
         nevent = find(cellfun(@(x) strcmp(x,concets2rm(ic)),allconcepts));
         for i = 1:length(deev)
             tevent = handles.concepts.(concets2rm{ic})(deev(i))/1e3;
@@ -799,7 +799,7 @@ if ~isempty(handles.selected_events)
              text(tevent,handles.plot_counter,[num2str(nevent) ' '],'Parent',handles.fr_axes,'Color','w','FontSize',12,'HorizontalAlignment','right','VerticalAlignment','top');
             end
         end
-    	handles.concepts.(concets2rm{ic})(handles.selected_events.(concets2rm(ic))) = [];
+    	handles.concepts.(concets2rm{ic})(handles.selected_events.(concets2rm{ic})) = [];
     end
     
     handles.selected_events = struct();
@@ -1021,7 +1021,7 @@ for zi = 1:length(zones_names)
         if dt<0
             error('Zone Start after End')
         end
-        r=rectangle(handles.multimedia_plot,'Position',[handles.zones.(zone_name).limits(1)/1e3 -1 dt 2],'FaceColor',[handles.colors(mod(zi,size(handles.colors,1)),:), 0.08], 'LineStyle','none');
+        r=rectangle(handles.multimedia_plot,'Position',[handles.zones.(zone_name).limits(1)/1e3 -1 dt 2],'FaceColor',[handles.colors(mod(zi,size(handles.colors,1)),:) 0.1],'LineStyle','none');
         tt1=text(handles.zones.(zone_name).limits(1)/1e3,1,zone_name,'Parent',handles.multimedia_plot,'Color',handles.colors(mod(zi,size(handles.colors,1)),:),'FontSize',8,'HorizontalAlignment','left','VerticalAlignment','top');
         tt2=text(handles.zones.(zone_name).limits(2)/1e3,1,zone_name,'Parent',handles.multimedia_plot,'Color',handles.colors(mod(zi,size(handles.colors,1)),:),'FontSize',8,'HorizontalAlignment','right','VerticalAlignment','top');
         elements = {r, tt1,tt2};
